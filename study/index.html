@@ -263,7 +263,7 @@
           <span class="err">진행 방식을 골라주세요.</span>
         </div>
         <div class="field" id="f-sessions">
-          <label for="sessions">이번 달 모임 횟수<span class="req">필수</span></label>
+          <label for="sessions">이번 달 모임 횟수<span class="req">선택</span></label>
           <input id="sessions" type="number" inputmode="numeric" min="1" max="31" placeholder="4">
           <span class="err">1~31 사이 숫자로 적어주세요.</span>
         </div>
@@ -480,7 +480,9 @@ var PER_PERSON = 20000;
   form.addEventListener("submit", async function(e){
     e.preventDefault(); showStatus("");
     var members = readMembers(), plan = plans();
-    var amount = parseInt($("amount").value, 10), sessions = parseInt($("sessions").value, 10);
+    var amount = parseInt($("amount").value, 10);
+    var sessionsRaw = $("sessions").value.trim();
+    var sessions = sessionsRaw ? parseInt(sessionsRaw, 10) : null;
     var email = $("email").value.trim().toLowerCase();
     var ags = Array.prototype.every.call(document.querySelectorAll(".ag"), function(x){ return x.checked; });
 
@@ -493,7 +495,7 @@ var PER_PERSON = 20000;
     bad = mark("f-topic", !radio("topic")) || bad;
     bad = mark("f-tdetail", !$("tdetail").value.trim()) || bad;
     bad = mark("f-mode", !radio("mode")) || bad;
-    bad = mark("f-sessions", !(sessions >= 1 && sessions <= 31)) || bad;
+    bad = mark("f-sessions", sessions !== null && !(sessions >= 1 && sessions <= 31)) || bad;
     bad = mark("f-members", members.some(function(m){ return !m.name || !m.cohort; })) || bad;
     bad = mark("f-plan", plan.length === 0) || bad;
     var needTools = plan.indexOf("툴 구독") >= 0;
